@@ -1,9 +1,14 @@
 {
- "generated_at": "2026-08-01T16:31:31+09:00",
+ "generated_at": "2026-08-01T18:32:26+09:00",
  "timezone": "Asia/Seoul",
  "current": {
-  "status": "unknown",
-  "label": "확인 불가"
+  "status": "operational",
+  "label": "정상 운항",
+  "checked_at": "2026-08-01T18:32:24+09:00",
+  "website_ok": true,
+  "note": null,
+  "matched_keywords": [],
+  "reason": null
  },
  "uptime": {
   "d30": 72.79,
@@ -1024,13 +1029,13 @@
   },
   {
    "date": "2026-08-01",
-   "status": "no-data",
+   "status": "operational",
    "suspended_minutes": 0,
    "partial_minutes": 0,
-   "measured_checks": 0,
+   "measured_checks": 1,
    "unknown_checks": 0,
    "service_minutes": 780,
-   "website_status": "no-data",
+   "website_status": "operational",
    "notes": []
   }
  ],
