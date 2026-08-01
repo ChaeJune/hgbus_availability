@@ -37,6 +37,13 @@ def cmd_build(_args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_demo(_args: argparse.Namespace) -> int:
+    from .demo import generate_demo_summary
+
+    generate_demo_summary()
+    return 0
+
+
 def cmd_record(args: argparse.Namespace) -> int:
     config = load_config()
     if args.status not in STATUS_LABELS:
@@ -61,6 +68,9 @@ def main() -> int:
 
     sub.add_parser("check", help="상태 확인 1회 실행").set_defaults(func=cmd_check)
     sub.add_parser("build", help="summary.json 재생성").set_defaults(func=cmd_build)
+    sub.add_parser("demo", help="샘플 데이터로 페이지 미리보기용 summary 생성").set_defaults(
+        func=cmd_demo
+    )
 
     record = sub.add_parser("record", help="수동 기록 추가")
     record.add_argument("--status", required=True, help="operational|partial|suspended")

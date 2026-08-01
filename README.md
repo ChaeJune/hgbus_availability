@@ -69,9 +69,17 @@ python -m monitor record --status suspended --note "풍랑주의보로 전면 �
 로컬에서 페이지 미리보기:
 
 ```bash
+# 실제 데이터 기준 (수집 전이면 거의 빈 화면)
 python -m monitor build
 python -m http.server -d docs 8000   # http://localhost:8000
+
+# 페이지가 어떻게 보이는지 샘플 데이터로 채워서 보기
+python -m monitor demo
+python -m http.server -d docs 8000   # 확인 후 build 로 되돌리기
 ```
+
+한국 IP 에서 실행한다면 `python -m monitor check` 로 실제 사이트를 상대로
+바로 수집을 시작할 수 있습니다 (해외 IP 차단 문제 없음).
 
 테스트:
 
