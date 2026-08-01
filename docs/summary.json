@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-08-01T16:21:48+09:00",
+ "generated_at": "2026-08-01T16:31:31+09:00",
  "timezone": "Asia/Seoul",
  "current": {
   "status": "unknown",
   "label": "확인 불가"
  },
  "uptime": {
-  "d30": null,
-  "d90": null
+  "d30": 72.79,
+  "d90": 90.97
  },
  "days": [
   {
@@ -738,179 +738,212 @@
   },
   {
    "date": "2026-07-09",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 705,
+   "measured_checks": 47,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-10",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 975,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-11",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 795,
+   "measured_checks": 53,
    "unknown_checks": 0,
    "service_minutes": 780,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-12",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 795,
+   "measured_checks": 53,
    "unknown_checks": 0,
    "service_minutes": 780,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-13",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 975,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-14",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 975,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-15",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 975,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-16",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 975,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-17",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 975,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-18",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 795,
+   "measured_checks": 53,
    "unknown_checks": 0,
    "service_minutes": 780,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-19",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 795,
+   "measured_checks": 53,
    "unknown_checks": 0,
    "service_minutes": 780,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-20",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 975,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-21",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 975,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-22",
-   "status": "no-data",
+   "status": "degraded",
    "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "partial_minutes": 975,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
+   ]
   },
   {
    "date": "2026-07-23",
-   "status": "no-data",
-   "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
+   "status": "outage",
+   "suspended_minutes": 75,
+   "partial_minutes": 900,
+   "measured_checks": 65,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)",
+    "팔당댐 방류량 3,900㎥/s 지속·경기북부 호우로 동·서부 전 노선 운항 중단 — 뉴스 보도 기반 수동 백필"
+   ]
   },
   {
    "date": "2026-07-24",
-   "status": "no-data",
-   "suspended_minutes": 0,
+   "status": "outage",
+   "suspended_minutes": 540,
    "partial_minutes": 0,
-   "measured_checks": 0,
+   "measured_checks": 36,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "no-data",
-   "notes": []
+   "notes": [
+    "팔당댐 방류량 3,900㎥/s 지속·경기북부 호우로 동·서부 전 노선 운항 중단 — 뉴스 보도 기반 수동 백필"
+   ]
   },
   {
    "date": "2026-07-25",
@@ -1001,7 +1034,19 @@
    "notes": []
   }
  ],
- "incidents": [],
+ "incidents": [
+  {
+   "start": "2026-07-09T11:00:00+09:00",
+   "end": "2026-07-24T15:30:00+09:00",
+   "ongoing": false,
+   "severity": "suspended",
+   "duration_minutes": 21870,
+   "notes": [
+    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)",
+    "팔당댐 방류량 3,900㎥/s 지속·경기북부 호우로 동·서부 전 노선 운항 중단 — 뉴스 보도 기반 수동 백필"
+   ]
+  }
+ ],
  "status_labels": {
   "operational": "정상 운항",
   "partial": "일부 결항",

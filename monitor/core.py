@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -66,3 +66,21 @@ def in_service_hours(when: datetime, config: dict) -> bool:
 def service_minutes_for_day(when: datetime, config: dict) -> int:
     start, end = service_window(when, config)
     return (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute)
+
+
+def service_overlap_minutes(a: datetime, b: datetime, config: dict) -> float:
+    """a~b 구간 중 운항 시간에 해당하는 분량(운항 시간 기준 경과)."""
+    if b <= a:
+        return 0.0
+    total = 0.0
+    day = a.replace(hour=0, minute=0, second=0, microsecond=0)
+    while day.date() <= b.date():
+        start_t, end_t = service_window(day, config)
+        window_start = day.replace(hour=start_t.hour, minute=start_t.minute)
+        window_end = day.replace(hour=end_t.hour, minute=end_t.minute)
+        lo = max(a, window_start)
+        hi = min(b, window_end)
+        if hi > lo:
+            total += (hi - lo).total_seconds() / 60
+        day += timedelta(days=1)
+    return total

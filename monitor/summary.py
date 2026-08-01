@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import bisect
 import json
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -16,8 +17,10 @@ from .core import (
     SUMMARY_PATH,
     SUSPENDED,
     UNKNOWN,
+    in_service_hours,
     now_local,
     service_minutes_for_day,
+    service_overlap_minutes,
     tz,
 )
 from .store import active_override, load_checks, load_overrides
@@ -31,6 +34,53 @@ def effective_status(record: dict, overrides: list[dict]) -> tuple[str, str | No
     if override is not None:
         return override["status"], override.get("note")
     return record["service_status"], None
+
+
+def synthesize_override_checks(
+    overrides: list[dict],
+    checks: list[dict],
+    config: dict,
+    since: datetime,
+    now: datetime,
+) -> list[dict]:
+    """자동 체크가 없는 구간의 수동 기록(결항/일부결항)을 가상 체크로 변환한다.
+
+    과거 결항을 백필하거나 수집 시작 전 기간을 기록할 때, 수동 기록만으로도
+    일별 집계·인시던트·가동률에 반영되도록 한다. 실제 체크가 있는 시각 주변은
+    건너뛰어 이중 집계를 막는다.
+    """
+    interval = timedelta(minutes=config.get("check_interval_minutes", 15))
+    real_times = sorted(c["_ts"] for c in checks)
+
+    def has_real_check_near(ts: datetime) -> bool:
+        i = bisect.bisect_left(real_times, ts)
+        for j in (i - 1, i):
+            if 0 <= j < len(real_times):
+                if abs((real_times[j] - ts).total_seconds()) < interval.total_seconds():
+                    return True
+        return False
+
+    virtual = []
+    for override in overrides:
+        if override["status"] not in (SUSPENDED, PARTIAL):
+            continue
+        t = max(override["_start"], since)
+        end = min(override["_end"] or now, now)
+        while t < end:
+            if in_service_hours(t, config) and not has_real_check_near(t):
+                virtual.append(
+                    {
+                        "ts": t.isoformat(timespec="seconds"),
+                        "_ts": t,
+                        "source": "manual",
+                        "in_service_hours": True,
+                        "service_status": override["status"],
+                        "synthetic": True,
+                        "_override_end": override["_end"],
+                    }
+                )
+            t += interval
+    return virtual
 
 
 def _day_status(counts: dict[str, int], suspended_minutes: int, config: dict) -> str:
@@ -112,23 +162,35 @@ def _website_day_status(fail: int, total: int) -> str:
     return "operational"
 
 
-def compute_uptime(days: list[dict], window: int, interval: int) -> float | None:
+def compute_uptime(days: list[dict], window: int) -> float | None:
+    """상태 페이지 방식 가동률: 전체 운항 예정 시간 대비 기록된 결항 시간.
+
+    기록이 없는 기간은 정상 운항으로 간주한다(일반적인 status page 관례).
+    창 안에 측정치가 하나도 없으면 None.
+    """
     recent = days[-window:]
-    measured_minutes = sum(d["measured_checks"] * interval for d in recent)
-    if measured_minutes == 0:
+    if sum(d["measured_checks"] for d in recent) == 0:
+        return None
+    scheduled_minutes = sum(d["service_minutes"] for d in recent)
+    if scheduled_minutes == 0:
         return None
     down_minutes = sum(
-        d["suspended_minutes"] + d["partial_minutes"] * 0.5 for d in recent
+        min(d["suspended_minutes"] + d["partial_minutes"] * 0.5, d["service_minutes"])
+        for d in recent
     )
-    value = 100.0 * (1 - down_minutes / measured_minutes)
+    value = 100.0 * (1 - down_minutes / scheduled_minutes)
     return round(value, 2)
 
 
 def derive_incidents(
     checks: list[dict], overrides: list[dict], config: dict
 ) -> list[dict]:
-    """연속된 결항/일부결항 구간을 인시던트로 묶는다."""
-    gap = timedelta(minutes=config.get("incident_gap_tolerance_minutes", 45))
+    """연속된 결항/일부결항 구간을 인시던트로 묶는다.
+
+    공백 판정은 운항 시간 기준으로 계산해, 밤사이(운항 시간 외)를 건너
+    여러 날 이어지는 결항은 하나의 인시던트로 묶인다.
+    """
+    gap_minutes = config.get("incident_gap_tolerance_minutes", 45)
     incidents: list[dict] = []
     current: dict | None = None
 
@@ -138,8 +200,13 @@ def derive_incidents(
         status, note = effective_status(record, overrides)
         if status in (SUSPENDED, PARTIAL):
             keywords = record.get("matched_keywords", [])
-            if current is not None and record["_ts"] - current["_last"] <= gap:
+            if (
+                current is not None
+                and service_overlap_minutes(current["_last"], record["_ts"], config)
+                <= gap_minutes
+            ):
                 current["_last"] = record["_ts"]
+                current["_explicit_end"] = record.get("_override_end")
                 current["severity"] = max(current["severity"], SEVERITY[status])
                 for extra in ([note] if note else []) + keywords:
                     if extra and extra not in current["notes"]:
@@ -150,6 +217,7 @@ def derive_incidents(
                 current = {
                     "_start": record["_ts"],
                     "_last": record["_ts"],
+                    "_explicit_end": record.get("_override_end"),
                     "severity": SEVERITY[status],
                     "notes": [n for n in ([note] if note else []) + keywords if n],
                 }
@@ -158,16 +226,22 @@ def derive_incidents(
             current = None
 
     if current is not None:
-        current["_ongoing"] = True
+        # 뒤에 더 이상 기록이 없어도, 수동 기록에 종료 시각이 명시돼 있으면
+        # 그 시각으로 종료 처리한다 (없으면 '진행 중').
+        if current.get("_explicit_end") is None:
+            current["_ongoing"] = True
         incidents.append(current)
 
     interval = config.get("check_interval_minutes", 15)
     result = []
     for item in incidents:
         start = item["_start"]
-        end = None if item.get("_ongoing") else item["_last"] + timedelta(
-            minutes=interval
-        )
+        if item.get("_ongoing"):
+            end = None
+        elif item.get("_explicit_end") is not None:
+            end = item["_explicit_end"]
+        else:
+            end = item["_last"] + timedelta(minutes=interval)
         duration = None
         if end is not None:
             duration = int((end - start).total_seconds() // 60)
@@ -193,13 +267,15 @@ def build_summary(
     now: datetime | None = None,
 ) -> dict:
     now = now or now_local(config)
-    interval = config.get("check_interval_minutes", 15)
     since = now - timedelta(days=config.get("history_days", 90))
     checks = load_checks(since, config, history_dir)
     overrides = load_overrides(config, overrides_path)
 
-    days = aggregate_days(checks, overrides, config, now)
-    incidents = derive_incidents(checks, overrides, config)
+    virtual = synthesize_override_checks(overrides, checks, config, since, now)
+    merged = sorted(checks + virtual, key=lambda r: r["_ts"])
+
+    days = aggregate_days(merged, overrides, config, now)
+    incidents = derive_incidents(merged, overrides, config)
 
     current: dict = {"status": UNKNOWN, "label": STATUS_LABELS[UNKNOWN]}
     if checks:
@@ -214,14 +290,25 @@ def build_summary(
             "matched_keywords": latest.get("matched_keywords", []),
             "reason": latest.get("reason"),
         }
+    # 자동 체크가 없어도 지금 시각에 걸린 수동 기록이 있으면 그것이 현재 상태다.
+    ongoing = active_override(overrides, now)
+    if ongoing is not None:
+        current.update(
+            {
+                "status": ongoing["status"],
+                "label": STATUS_LABELS.get(ongoing["status"], ongoing["status"]),
+                "note": ongoing.get("note"),
+                "manual": True,
+            }
+        )
 
     summary = {
         "generated_at": now.isoformat(timespec="seconds"),
         "timezone": config.get("timezone", "Asia/Seoul"),
         "current": current,
         "uptime": {
-            "d30": compute_uptime(days, 30, interval),
-            "d90": compute_uptime(days, 90, interval),
+            "d30": compute_uptime(days, 30),
+            "d90": compute_uptime(days, 90),
         },
         "days": days,
         "incidents": incidents[:100],

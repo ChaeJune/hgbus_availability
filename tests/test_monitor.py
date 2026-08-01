@@ -260,11 +260,118 @@ def test_incident_gap_merging(config):
 
 def test_compute_uptime():
     days = [
-        {"measured_checks": 10, "suspended_minutes": 0, "partial_minutes": 0},
-        {"measured_checks": 10, "suspended_minutes": 75, "partial_minutes": 30},
+        {"measured_checks": 10, "suspended_minutes": 0, "partial_minutes": 0,
+         "service_minutes": 960},
+        {"measured_checks": 10, "suspended_minutes": 75, "partial_minutes": 30,
+         "service_minutes": 960},
     ]
-    # 측정 300분 중 결항 75 + 일부결항 30*0.5 = 90분
-    assert compute_uptime(days, 30, 15) == 70.0
+    # 전체 운항 예정 1920분 중 결항 75 + 일부결항 30*0.5 = 90분
+    assert compute_uptime(days, 30) == round(100 * (1 - 90 / 1920), 2)
+
+
+def test_compute_uptime_none_without_data():
+    days = [
+        {"measured_checks": 0, "suspended_minutes": 0, "partial_minutes": 0,
+         "service_minutes": 960},
+    ]
+    assert compute_uptime(days, 30) is None
+
+
+def test_backfill_override_without_checks(tmp_path, config):
+    """자동 체크가 전혀 없어도 수동 기록만으로 페이지에 반영돼야 한다."""
+    overrides = tmp_path / "overrides.jsonl"
+    append_override(
+        {
+            "start": "2026-07-09T11:00:00+09:00",
+            "end": "2026-07-23T21:30:00+09:00",
+            "status": PARTIAL,
+            "note": "동부 구간 결항",
+        },
+        overrides,
+    )
+    append_override(
+        {
+            "start": "2026-07-23T21:30:00+09:00",
+            "end": "2026-07-24T15:30:00+09:00",
+            "status": SUSPENDED,
+            "note": "전 노선 중단",
+        },
+        overrides,
+    )
+
+    summary = build_summary(
+        config,
+        history_dir=tmp_path / "history",  # 존재하지 않음 = 체크 기록 0건
+        overrides_path=overrides,
+        output_path=tmp_path / "summary.json",
+        now=datetime(2026, 8, 1, 12, 0, tzinfo=KST),
+    )
+
+    days = {d["date"]: d for d in summary["days"]}
+    assert days["2026-07-10"]["status"] == "degraded"      # 일부 결항(하루 종일)
+    assert days["2026-07-10"]["partial_minutes"] > 900
+    assert days["2026-07-24"]["status"] == "outage"        # 전면 결항 540분
+    assert days["2026-07-25"]["status"] == "no-data"       # 재개 이후는 기록 없음
+
+    # 밤사이를 건너 연속된 결항은 하나의 인시던트로 묶인다
+    assert len(summary["incidents"]) == 1
+    incident = summary["incidents"][0]
+    assert incident["severity"] == "suspended"  # 구간 내 최고 심각도
+    assert incident["duration_minutes"] >= 14 * 24 * 60  # 15일 이상
+    assert incident["ongoing"] is False
+
+    assert summary["uptime"]["d90"] is not None
+    assert summary["uptime"]["d90"] < 95
+
+
+def test_ongoing_override_sets_current(tmp_path, config):
+    overrides = tmp_path / "overrides.jsonl"
+    append_override(
+        {
+            "start": "2026-08-01T09:00:00+09:00",
+            "end": None,
+            "status": SUSPENDED,
+            "note": "호우로 전면 결항",
+        },
+        overrides,
+    )
+    summary = build_summary(
+        config,
+        history_dir=tmp_path / "history",
+        overrides_path=overrides,
+        output_path=tmp_path / "summary.json",
+        now=datetime(2026, 8, 1, 12, 0, tzinfo=KST),
+    )
+    assert summary["current"]["status"] == SUSPENDED
+    assert summary["current"]["manual"] is True
+    assert summary["incidents"][0]["ongoing"] is True
+
+
+def test_no_double_count_when_checks_overlap_override(tmp_path, config):
+    """실제 체크가 있는 시간대엔 가상 체크를 만들지 않는다."""
+    base = datetime(2026, 7, 30, tzinfo=KST)
+    records = synth_day(base, [OPERATIONAL] * 8)  # 09:00~10:45 실제 체크
+    history = make_history(tmp_path, config, records)
+    overrides = tmp_path / "overrides.jsonl"
+    append_override(
+        {
+            "start": "2026-07-30T09:00:00+09:00",
+            "end": "2026-07-30T11:00:00+09:00",
+            "status": SUSPENDED,
+            "note": "수동 정정",
+        },
+        overrides,
+    )
+    summary = build_summary(
+        config,
+        history_dir=history,
+        overrides_path=overrides,
+        output_path=tmp_path / "summary.json",
+        now=datetime(2026, 7, 31, 12, 0, tzinfo=KST),
+    )
+    day = {d["date"]: d for d in summary["days"]}["2026-07-30"]
+    # 09:00~11:00 = 120분: 실제 체크 8개(120분) + 가상 체크 이중 집계 없음
+    assert day["suspended_minutes"] == 120
 
 
 def test_load_checks_filters_by_time(tmp_path, config):

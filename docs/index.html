@@ -247,7 +247,11 @@ function fmtTs(iso) {
 function fmtDuration(min) {
   if (min == null) return "진행 중";
   if (min < 60) return `${min}분`;
-  return `${Math.floor(min / 60)}시간 ${min % 60 ? (min % 60) + "분" : ""}`.trim();
+  if (min < 1440)
+    return `${Math.floor(min / 60)}시간 ${min % 60 ? (min % 60) + "분" : ""}`.trim();
+  const days = Math.floor(min / 1440);
+  const hours = Math.floor((min % 1440) / 60);
+  return `${days}일 ${hours ? hours + "시간" : ""}`.trim();
 }
 
 function showTooltip(evt, text) {
