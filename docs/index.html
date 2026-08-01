@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한강버스 운항 현황</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --hairline: #e1e0d9;
+    --border: rgba(11, 11, 11, 0.10);
+    --good: #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --nodata: #e1e0d9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --hairline: #2c2c2a;
+      --border: rgba(255, 255, 255, 0.10);
+      --nodata: #2c2c2a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --hairline: #2c2c2a;
+    --border: rgba(255, 255, 255, 0.10);
+    --nodata: #2c2c2a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo",
+      "Noto Sans KR", sans-serif;
+    background: var(--page);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 20px 64px; }
+  header h1 { font-size: 22px; margin: 0 0 4px; }
+  header p { margin: 0; color: var(--ink-2); font-size: 14px; }
+
+  .banner {
+    margin: 24px 0;
+    padding: 18px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .banner .dot { width: 14px; height: 14px; border-radius: 50%; flex: none; }
+  .banner .title { font-size: 17px; font-weight: 700; }
+  .banner .sub { font-size: 13px; color: var(--ink-2); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .card-head .name { font-weight: 600; font-size: 15px; }
+  .card-head .uptime { color: var(--ink-2); font-size: 13px; }
+
+  .bars {
+    display: flex;
+    gap: 2px;
+    height: 34px;
+    align-items: stretch;
+  }
+  .bars .tick {
+    flex: 1 1 0;
+    min-width: 2px;
+    border-radius: 2px;
+    background: var(--nodata);
+    cursor: default;
+  }
+  .tick.s-operational { background: var(--good); }
+  .tick.s-degraded { background: var(--warning); }
+  .tick.s-outage { background: var(--critical); }
+  .tick.s-no-data { background: var(--nodata); }
+  .bars-foot {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 6px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--ink-2);
+    margin: 4px 0 24px;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i {
+    width: 10px; height: 10px; border-radius: 2px; display: inline-block;
+  }
+
+  h2 { font-size: 16px; margin: 32px 0 12px; }
+  .incident {
+    border-left: 3px solid var(--critical);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+    border-top: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .incident.partial { border-left-color: var(--serious); }
+  .incident .when { font-size: 13px; color: var(--ink-2); }
+  .incident .what { font-size: 14px; font-weight: 600; margin: 2px 0; }
+  .incident .notes { font-size: 13px; color: var(--ink-2); }
+  .empty { color: var(--muted); font-size: 14px; padding: 12px 0; }
+
+  #tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: var(--ink);
+    color: var(--page);
+    font-size: 12px;
+    line-height: 1.45;
+    padding: 8px 10px;
+    border-radius: 6px;
+    max-width: 260px;
+    z-index: 10;
+    display: none;
+    white-space: pre-line;
+  }
+  footer { margin-top: 40px; font-size: 12px; color: var(--muted); }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>한강버스 운항 현황</h1>
+    <p>서울 한강버스(마곡–잠실)의 운항 여부를 주기적으로 확인해 기록합니다.</p>
+  </header>
+
+  <div class="banner" id="banner">
+    <span class="dot" style="background: var(--nodata)"></span>
+    <div>
+      <div class="title">데이터 로딩 중…</div>
+      <div class="sub"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="name">선박 운항</span>
+      <span class="uptime" id="uptime-service"></span>
+    </div>
+    <div class="bars" id="bars-service" role="img" aria-label="최근 90일 선박 운항 상태"></div>
+    <div class="bars-foot"><span>90일 전</span><span>오늘</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="name">공식 웹사이트 (hgbus.co.kr)</span>
+      <span class="uptime" id="uptime-website"></span>
+    </div>
+    <div class="bars" id="bars-website" role="img" aria-label="최근 90일 웹사이트 상태"></div>
+    <div class="bars-foot"><span>90일 전</span><span>오늘</span></div>
+  </div>
+
+  <div class="legend">
+    <span><i style="background: var(--good)"></i>정상 운항</span>
+    <span><i style="background: var(--warning)"></i>일부 결항·단시간 중단</span>
+    <span><i style="background: var(--critical)"></i>결항 (1시간 이상)</span>
+    <span><i style="background: var(--nodata)"></i>데이터 없음</span>
+  </div>
+
+  <h2>운항 중단 이력</h2>
+  <div id="incidents"><div class="empty">기록된 운항 중단이 없습니다.</div></div>
+
+  <footer>
+    <span id="generated"></span> ·
+    운항 시간 내 15분 간격으로 확인하며, 확인 불가(사이트 접속 실패)는 결항으로 집계하지 않습니다. ·
+    <a href="https://hgbus.co.kr/" rel="noopener">공식 사이트</a>
+  </footer>
+</div>
+<div id="tooltip"></div>
+
+<script>
+const STATUS_META = {
+  operational: { label: "정상 운항", color: "var(--good)", icon: "✓" },
+  partial:     { label: "일부 결항", color: "var(--serious)", icon: "△" },
+  suspended:   { label: "전면 결항", color: "var(--critical)", icon: "✕" },
+  closed:      { label: "운항 시간 외", color: "var(--nodata)", icon: "○" },
+  unknown:     { label: "확인 불가", color: "var(--nodata)", icon: "?" },
+};
+
+const DAY_LABEL = {
+  operational: "정상 운항",
+  degraded: "일부 결항·단시간 중단",
+  outage: "결항",
+  "no-data": "데이터 없음",
+};
+
+const tooltip = document.getElementById("tooltip");
+
+function fmtDate(iso) {
+  const d = new Date(iso + "T00:00:00+09:00");
+  return d.toLocaleDateString("ko-KR", {
+    year: "numeric", month: "long", day: "numeric", weekday: "short",
+    timeZone: "Asia/Seoul",
+  });
+}
+function fmtTs(iso) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleString("ko-KR", {
+    dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Seoul",
+  });
+}
+function fmtDuration(min) {
+  if (min == null) return "진행 중";
+  if (min < 60) return `${min}분`;
+  return `${Math.floor(min / 60)}시간 ${min % 60 ? (min % 60) + "분" : ""}`.trim();
+}
+
+function showTooltip(evt, text) {
+  tooltip.textContent = text;
+  tooltip.style.display = "block";
+  const pad = 12;
+  let x = evt.clientX + pad, y = evt.clientY + pad;
+  const r = tooltip.getBoundingClientRect();
+  if (x + r.width > window.innerWidth - 8) x = evt.clientX - r.width - pad;
+  if (y + r.height > window.innerHeight - 8) y = evt.clientY - r.height - pad;
+  tooltip.style.left = x + "px";
+  tooltip.style.top = y + "px";
+}
+function hideTooltip() { tooltip.style.display = "none"; }
+
+function renderBars(el, days, kind) {
+  el.innerHTML = "";
+  for (const day of days) {
+    const tick = document.createElement("div");
+    const status = kind === "website" ? day.website_status : day.status;
+    tick.className = `tick s-${status}`;
+    const lines = [fmtDate(day.date), DAY_LABEL[status] || status];
+    if (kind === "service") {
+      if (day.suspended_minutes > 0) lines.push(`전면 결항 약 ${fmtDuration(day.suspended_minutes)}`);
+      if (day.partial_minutes > 0) lines.push(`일부 결항 약 ${fmtDuration(day.partial_minutes)}`);
+      if (day.notes && day.notes.length) lines.push(day.notes.join(", "));
+      if (status === "no-data" && day.unknown_checks > 0) lines.push("사이트 확인 불가");
+    }
+    tick.addEventListener("mousemove", (e) => showTooltip(e, lines.join("\n")));
+    tick.addEventListener("mouseleave", hideTooltip);
+    el.appendChild(tick);
+  }
+}
+
+function renderBanner(current) {
+  const banner = document.getElementById("banner");
+  const meta = STATUS_META[current.status] || STATUS_META.unknown;
+  banner.querySelector(".dot").style.background = meta.color;
+  banner.querySelector(".title").textContent = `${meta.icon} ${meta.label}`;
+  const subParts = [];
+  if (current.checked_at) subParts.push(`마지막 확인: ${fmtTs(current.checked_at)}`);
+  if (current.note) subParts.push(current.note);
+  else if (current.matched_keywords && current.matched_keywords.length)
+    subParts.push(current.matched_keywords.join(", "));
+  if (current.status === "unknown" && current.reason)
+    subParts.push("사이트 응답을 확인하지 못했습니다");
+  banner.querySelector(".sub").textContent = subParts.join(" · ");
+}
+
+function renderIncidents(incidents) {
+  const el = document.getElementById("incidents");
+  if (!incidents.length) return;
+  el.innerHTML = "";
+  for (const inc of incidents) {
+    const div = document.createElement("div");
+    div.className = "incident" + (inc.severity === "partial" ? " partial" : "");
+    const label = inc.severity === "partial" ? "일부 결항" : "전면 결항";
+    div.innerHTML = `
+      <div class="what"></div>
+      <div class="when"></div>
+      <div class="notes"></div>`;
+    div.querySelector(".what").textContent =
+      `${label}${inc.ongoing ? " (진행 중)" : ""} · ${fmtDuration(inc.duration_minutes)}`;
+    div.querySelector(".when").textContent =
+      `${fmtTs(inc.start)} ~ ${inc.end ? fmtTs(inc.end) : ""}`;
+    div.querySelector(".notes").textContent = (inc.notes || []).join(", ");
+    el.appendChild(div);
+  }
+}
+
+async function main() {
+  let data;
+  try {
+    const res = await fetch("./summary.json", { cache: "no-store" });
+    data = await res.json();
+  } catch (err) {
+    document.querySelector("#banner .title").textContent = "데이터를 불러오지 못했습니다";
+    return;
+  }
+  renderBanner(data.current);
+  renderBars(document.getElementById("bars-service"), data.days, "service");
+  renderBars(document.getElementById("bars-website"), data.days, "website");
+  const up = data.uptime || {};
+  document.getElementById("uptime-service").textContent =
+    up.d90 != null ? `최근 90일 가동률 ${up.d90}%` : "측정 데이터 수집 중";
+  const webDays = data.days.filter((d) => d.website_status !== "no-data").length;
+  document.getElementById("uptime-website").textContent =
+    webDays > 0 ? `최근 ${webDays}일 측정` : "측정 데이터 수집 중";
+  renderIncidents(data.incidents || []);
+  document.getElementById("generated").textContent =
+    `마지막 갱신: ${fmtTs(data.generated_at)} (KST)`;
+}
+main();
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "timezone": "Asia/Seoul",
+  "check_interval_minutes": 15,
+  "sources": [
+    {
+      "name": "website",
+      "label": "공식 웹사이트 (hgbus.co.kr)",
+      "url": "https://hgbus.co.kr/",
+      "timeout_seconds": 20
+    }
+  ],
+  "keywords": {
+    "suspended": [
+      "전면 결항",
+      "전 노선 결항",
+      "운항 전면 중단",
+      "전면 통제",
+      "금일 운항 중단",
+      "금일 결항",
+      "운항이 전면 중단",
+      "임시 휴항"
+    ],
+    "partial": [
+      "일부 결항",
+      "부분 결항",
+      "일부 노선 결항",
+      "일부 운항 중단",
+      "지연 운항",
+      "단축 운항"
+    ]
+  },
+  "schedule": {
+    "weekday": { "start": "06:30", "end": "22:30" },
+    "weekend": { "start": "09:30", "end": "22:30" }
+  },
+  "history_days": 90,
+  "incident_gap_tolerance_minutes": 45,
+  "day_outage_threshold_minutes": 60
+}
