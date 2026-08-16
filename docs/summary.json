@@ -1,10 +1,10 @@
 {
- "generated_at": "2026-08-17T00:38:00+09:00",
+ "generated_at": "2026-08-17T00:58:56+09:00",
  "timezone": "Asia/Seoul",
  "current": {
   "status": "closed",
   "label": "운항 시간 외",
-  "checked_at": "2026-08-17T00:37:58+09:00",
+  "checked_at": "2026-08-17T00:58:54+09:00",
   "website_ok": true,
   "note": null,
   "matched_keywords": [],
