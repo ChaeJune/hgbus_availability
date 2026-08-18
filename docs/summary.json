@@ -1,10 +1,10 @@
 {
- "generated_at": "2026-08-18T12:59:51+09:00",
+ "generated_at": "2026-08-18T13:46:22+09:00",
  "timezone": "Asia/Seoul",
  "current": {
   "status": "operational",
   "label": "정상 운항",
-  "checked_at": "2026-08-18T12:59:44+09:00",
+  "checked_at": "2026-08-18T13:46:20+09:00",
   "website_ok": true,
   "note": null,
   "matched_keywords": [],
@@ -1032,7 +1032,7 @@
    "status": "operational",
    "suspended_minutes": 0,
    "partial_minutes": 0,
-   "measured_checks": 9,
+   "measured_checks": 10,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "operational",
