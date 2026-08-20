@@ -1,31 +1,20 @@
 {
- "generated_at": "2026-08-20T23:56:37+09:00",
+ "generated_at": "2026-08-21T00:41:09+09:00",
  "timezone": "Asia/Seoul",
  "current": {
   "status": "closed",
   "label": "운항 시간 외",
-  "checked_at": "2026-08-20T23:56:35+09:00",
+  "checked_at": "2026-08-21T00:41:07+09:00",
   "website_ok": true,
   "note": null,
   "matched_keywords": [],
   "reason": null
  },
  "uptime": {
-  "d30": 94.33,
-  "d90": 90.95
+  "d30": 96.11,
+  "d90": 90.97
  },
  "days": [
-  {
-   "date": "2026-05-23",
-   "status": "no-data",
-   "suspended_minutes": 0,
-   "partial_minutes": 0,
-   "measured_checks": 0,
-   "unknown_checks": 0,
-   "service_minutes": 780,
-   "website_status": "no-data",
-   "notes": []
-  },
   {
    "date": "2026-05-24",
    "status": "no-data",
@@ -1033,6 +1022,17 @@
    "suspended_minutes": 0,
    "partial_minutes": 0,
    "measured_checks": 21,
+   "unknown_checks": 0,
+   "service_minutes": 960,
+   "website_status": "operational",
+   "notes": []
+  },
+  {
+   "date": "2026-08-21",
+   "status": "no-data",
+   "suspended_minutes": 0,
+   "partial_minutes": 0,
+   "measured_checks": 0,
    "unknown_checks": 0,
    "service_minutes": 960,
    "website_status": "operational",
