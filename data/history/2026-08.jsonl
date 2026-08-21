@@ -460,3 +460,4 @@
 {"ts": "2026-08-21T20:44:06+09:00", "source": "website", "in_service_hours": true, "http_status": 200, "latency_ms": 1882, "website_ok": true, "service_status": "operational"}
 {"ts": "2026-08-21T21:15:53+09:00", "source": "website", "in_service_hours": true, "http_status": 200, "latency_ms": 1947, "website_ok": true, "service_status": "operational"}
 {"ts": "2026-08-21T22:26:49+09:00", "source": "website", "in_service_hours": true, "http_status": 200, "latency_ms": 1690, "website_ok": true, "service_status": "operational"}
+{"ts": "2026-08-21T23:08:07+09:00", "source": "website", "in_service_hours": false, "http_status": 200, "latency_ms": 2179, "website_ok": true, "service_status": "closed"}
