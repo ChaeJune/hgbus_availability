@@ -1,10 +1,10 @@
 {
- "generated_at": "2026-08-29T06:29:38+09:00",
+ "generated_at": "2026-08-29T12:20:58+09:00",
  "timezone": "Asia/Seoul",
  "current": {
-  "status": "closed",
-  "label": "운항 시간 외",
-  "checked_at": "2026-08-29T06:29:36+09:00",
+  "status": "operational",
+  "label": "정상 운항",
+  "checked_at": "2026-08-29T12:20:56+09:00",
   "website_ok": true,
   "note": null,
   "matched_keywords": [],
@@ -1029,10 +1029,10 @@
   },
   {
    "date": "2026-08-29",
-   "status": "no-data",
+   "status": "operational",
    "suspended_minutes": 0,
    "partial_minutes": 0,
-   "measured_checks": 0,
+   "measured_checks": 1,
    "unknown_checks": 0,
    "service_minutes": 780,
    "website_status": "operational",
