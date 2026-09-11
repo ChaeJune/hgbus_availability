@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-09-12T02:46:38+09:00",
+ "generated_at": "2026-09-12T05:48:45+09:00",
  "timezone": "Asia/Seoul",
  "current": {
   "status": "closed",
   "label": "운항 시간 외",
-  "checked_at": "2026-09-12T02:46:17+09:00",
-  "website_ok": false,
+  "checked_at": "2026-09-12T05:48:43+09:00",
+  "website_ok": true,
   "note": null,
   "matched_keywords": [],
-  "reason": "TimeoutError: The read operation timed out"
+  "reason": null
  },
  "uptime": {
   "d30": 100.0,
