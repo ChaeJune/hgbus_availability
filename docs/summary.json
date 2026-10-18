@@ -1,33 +1,20 @@
 {
- "generated_at": "2026-10-18T23:53:09+09:00",
+ "generated_at": "2026-10-19T02:57:05+09:00",
  "timezone": "Asia/Seoul",
  "current": {
   "status": "closed",
   "label": "운항 시간 외",
-  "checked_at": "2026-10-18T23:53:07+09:00",
-  "website_ok": true,
+  "checked_at": "2026-10-19T02:56:44+09:00",
+  "website_ok": false,
   "note": null,
   "matched_keywords": [],
-  "reason": null
+  "reason": "TimeoutError: The read operation timed out"
  },
  "uptime": {
   "d30": 100.0,
-  "d90": 97.52
+  "d90": 98.11
  },
  "days": [
-  {
-   "date": "2026-07-21",
-   "status": "degraded",
-   "suspended_minutes": 0,
-   "partial_minutes": 960,
-   "measured_checks": 64,
-   "unknown_checks": 0,
-   "service_minutes": 960,
-   "website_status": "no-data",
-   "notes": [
-    "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)"
-   ]
-  },
   {
    "date": "2026-07-22",
    "status": "degraded",
@@ -1013,15 +1000,26 @@
    "service_minutes": 780,
    "website_status": "operational",
    "notes": []
+  },
+  {
+   "date": "2026-10-19",
+   "status": "no-data",
+   "suspended_minutes": 0,
+   "partial_minutes": 0,
+   "measured_checks": 0,
+   "unknown_checks": 0,
+   "service_minutes": 960,
+   "website_status": "outage",
+   "notes": []
   }
  ],
  "incidents": [
   {
-   "start": "2026-07-21T06:38:09+09:00",
+   "start": "2026-07-21T06:42:05+09:00",
    "end": "2026-07-24T15:30:00+09:00",
    "ongoing": false,
    "severity": "suspended",
-   "duration_minutes": 4851,
+   "duration_minutes": 4847,
    "notes": [
     "호우·팔당댐 방류로 동부(잠실~여의도) 구간 결항, 서부(마곡~여의도)는 운항 — 뉴스 보도 기반 수동 백필(중간 일시 재개 가능성 있음)",
     "팔당댐 방류량 3,900㎥/s 지속·경기북부 호우로 동·서부 전 노선 운항 중단 — 뉴스 보도 기반 수동 백필"
