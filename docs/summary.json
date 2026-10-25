@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-25T06:57:36+09:00",
+ "generated_at": "2026-10-25T09:13:25+09:00",
  "timezone": "Asia/Seoul",
  "current": {
   "status": "closed",
   "label": "운항 시간 외",
-  "checked_at": "2026-10-25T06:57:22+09:00",
-  "website_ok": true,
+  "checked_at": "2026-10-25T09:13:04+09:00",
+  "website_ok": false,
   "note": null,
   "matched_keywords": [],
-  "reason": null
+  "reason": "TimeoutError: The read operation timed out"
  },
  "uptime": {
   "d30": 100.0,
@@ -1002,7 +1002,7 @@
    "measured_checks": 0,
    "unknown_checks": 0,
    "service_minutes": 780,
-   "website_status": "degraded",
+   "website_status": "outage",
    "notes": []
   }
  ],
