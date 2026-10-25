@@ -133,3 +133,4 @@
 {"ts": "2026-10-25T22:56:41+09:00", "source": "website", "in_service_hours": false, "http_status": null, "website_ok": false, "service_status": "closed", "reason": "TimeoutError: The read operation timed out"}
 {"ts": "2026-10-26T02:34:08+09:00", "source": "website", "in_service_hours": false, "http_status": null, "website_ok": false, "service_status": "closed", "reason": "TimeoutError: The read operation timed out"}
 {"ts": "2026-10-26T04:59:06+09:00", "source": "website", "in_service_hours": false, "http_status": null, "website_ok": false, "service_status": "closed", "reason": "TimeoutError: The read operation timed out"}
+{"ts": "2026-10-26T07:28:53+09:00", "source": "website", "in_service_hours": true, "http_status": null, "website_ok": false, "service_status": "unknown", "reason": "TimeoutError: The read operation timed out"}
