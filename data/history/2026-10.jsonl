@@ -142,3 +142,4 @@
 {"ts": "2026-10-27T10:20:28+09:00", "source": "website", "in_service_hours": true, "http_status": 200, "latency_ms": 2140, "website_ok": true, "service_status": "operational"}
 {"ts": "2026-10-27T15:43:21+09:00", "source": "website", "in_service_hours": true, "http_status": 200, "latency_ms": 2302, "website_ok": true, "service_status": "operational"}
 {"ts": "2026-10-27T21:44:30+09:00", "source": "website", "in_service_hours": true, "http_status": 200, "latency_ms": 2162, "website_ok": true, "service_status": "operational"}
+{"ts": "2026-10-28T03:22:35+09:00", "source": "website", "in_service_hours": false, "http_status": 200, "latency_ms": 2435, "website_ok": true, "service_status": "closed"}
